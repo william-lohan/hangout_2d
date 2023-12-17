@@ -1,0 +1,65 @@
+[gd_scene load_steps=6 format=3 uid="uid://byura2ye2ssnb"]
+
+[ext_resource type="Script" path="res://scripts/game.gd" id="1_ncla4"]
+[ext_resource type="Script" path="res://scripts/move.gd" id="2_55iqc"]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_d3qwp"]
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_1xj62"]
+noise = SubResource("FastNoiseLite_d3qwp")
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_gt6od"]
+properties/0/path = NodePath(".:position")
+properties/0/spawn = true
+properties/0/replication_mode = 1
+
+[node name="Game" type="Node"]
+script = ExtResource("1_ncla4")
+
+[node name="ConnectionUI" type="CenterContainer" parent="."]
+process_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="ConnectionUI"]
+custom_minimum_size = Vector2(256, 0)
+layout_mode = 2
+
+[node name="Server" type="LineEdit" parent="ConnectionUI/VBoxContainer"]
+layout_mode = 2
+text = "127.0.0.1"
+placeholder_text = "Server"
+
+[node name="Port" type="LineEdit" parent="ConnectionUI/VBoxContainer"]
+layout_mode = 2
+text = "4433"
+placeholder_text = "Port"
+
+[node name="ConnectButton" type="Button" parent="ConnectionUI/VBoxContainer"]
+layout_mode = 2
+text = "Connect"
+
+[node name="HostButton" type="Button" parent="ConnectionUI/VBoxContainer"]
+layout_mode = 2
+text = "Host Local"
+
+[node name="World2D" type="Node2D" parent="."]
+
+[node name="Sprite2D" type="Sprite2D" parent="World2D"]
+texture = SubResource("NoiseTexture2D_1xj62")
+script = ExtResource("2_55iqc")
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="World2D/Sprite2D"]
+replication_config = SubResource("SceneReplicationConfig_gt6od")
+
+[node name="PlayerSpawner" type="MultiplayerSpawner" parent="World2D"]
+_spawnable_scenes = PackedStringArray("res://player.tscn")
+spawn_path = NodePath("../PlayerSpawnPath")
+
+[node name="PlayerSpawnPath" type="Node2D" parent="World2D"]
+
+[connection signal="pressed" from="ConnectionUI/VBoxContainer/ConnectButton" to="." method="_on_connect_button_pressed"]
+[connection signal="pressed" from="ConnectionUI/VBoxContainer/HostButton" to="." method="_on_host_button_pressed"]

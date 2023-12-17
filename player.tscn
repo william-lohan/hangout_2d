@@ -1,0 +1,29 @@
+[gd_scene load_steps=6 format=3 uid="uid://bheevrbdkgg2"]
+
+[ext_resource type="Script" path="res://scripts/player.gd" id="1_rmqv3"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_3sury"]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_8njw5"]
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_b1yxf"]
+width = 20
+height = 20
+noise = SubResource("FastNoiseLite_8njw5")
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_oib0h"]
+properties/0/path = NodePath(".:position")
+properties/0/spawn = true
+properties/0/replication_mode = 1
+
+[node name="Player" type="CharacterBody2D"]
+script = ExtResource("1_rmqv3")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_3sury")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = SubResource("NoiseTexture2D_b1yxf")
+
+[node name="ServerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+replication_config = SubResource("SceneReplicationConfig_oib0h")
