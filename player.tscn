@@ -1,7 +1,8 @@
-[gd_scene load_steps=19 format=3 uid="uid://beo25nbxakfby"]
+[gd_scene load_steps=22 format=3 uid="uid://beo25nbxakfby"]
 
 [ext_resource type="Script" path="res://scripts/player.gd" id="1_euveg"]
-[ext_resource type="Texture2D" uid="uid://galgtq70pcg4" path="res://assets/Modern_Interiors_v41.4/2_Characters/Character_Generator/0_Premade_Characters/16x16/Premade_Character_01.png" id="1_lbaaw"]
+[ext_resource type="Texture2D" uid="uid://sy13biyu0ytc" path="res://assets/Modern_Interiors_v41.4/2_Characters/Character_Generator/0_Premade_Characters/16x16/Premade_Character_01.png" id="1_lbaaw"]
+[ext_resource type="Script" path="res://scripts/player_input.gd" id="3_h8mlx"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_yrjif"]
 atlas = ExtResource("1_lbaaw")
@@ -250,7 +251,21 @@ _data = {
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_2a0xp"]
 size = Vector2(16, 8)
 
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_gbxut"]
+properties/0/path = NodePath(".:position")
+properties/0/spawn = true
+properties/0/replication_mode = 1
+properties/1/path = NodePath(".:id")
+properties/1/spawn = true
+properties/1/replication_mode = 1
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_h0o3l"]
+properties/0/path = NodePath("PlayerInput:direction")
+properties/0/spawn = true
+properties/0/replication_mode = 1
+
 [node name="Player" type="CharacterBody2D"]
+z_index = 1
 script = ExtResource("1_euveg")
 
 [node name="PlayerSprite" type="Sprite2D" parent="."]
@@ -271,3 +286,13 @@ position = Vector2(0, 4)
 shape = SubResource("RectangleShape2D_2a0xp")
 
 [node name="Camera2D" type="Camera2D" parent="."]
+position_smoothing_enabled = true
+drag_horizontal_enabled = true
+drag_vertical_enabled = true
+
+[node name="ServerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+replication_config = SubResource("SceneReplicationConfig_gbxut")
+
+[node name="PlayerInput" type="MultiplayerSynchronizer" parent="."]
+replication_config = SubResource("SceneReplicationConfig_h0o3l")
+script = ExtResource("3_h8mlx")
